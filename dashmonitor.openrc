@@ -1,0 +1,20 @@
+#!/sbin/openrc-run
+
+name="dashmonitor"
+description="dashMonitor system monitoring dashboard"
+command="/opt/dashmonitor/venv/bin/uvicorn"
+command_args="main:app --host 0.0.0.0 --port 9090 --workers 1"
+command_background="yes"
+command_user="root"
+directory="/opt/dashmonitor"
+pidfile="/run/dashmonitor.pid"
+output_log="/var/log/dashmonitor.log"
+error_log="/var/log/dashmonitor.log"
+
+depend() {
+    need net
+}
+
+start_pre() {
+    export $(grep -v '^#' /opt/dashmonitor/.env | xargs)
+}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dashMonitor</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+<link href="/static/css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="login-overlay" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background:rgba(0,0,0,0.85);z-index:9999;">
+  <div class="card p-4" style="width:360px;">
+    <h4 class="text-center mb-4">dashMonitor</h4>
+    <div id="login-error" class="alert alert-danger d-none py-2"></div>
+    <input id="login-user" class="form-control mb-2" placeholder="Usuario">
+    <input id="login-pass" class="form-control mb-3" type="password" placeholder="Contraseña">
+    <button id="login-btn" class="btn btn-primary w-100">Ingresar</button>
+  </div>
+</div>
+
+<nav class="navbar navbar-dark bg-dark fixed-top px-3" style="z-index:1030;">
+  <span class="navbar-brand mb-0 h6"><i class="bi bi-speedometer2 me-2"></i>dashMonitor</span>
+  <div class="d-flex align-items-center gap-3">
+    <small class="text-muted" id="navbar-hostname"></small>
+    <small class="text-muted" id="navbar-uptime"></small>
+    <span id="pause-badge" class="badge bg-warning text-dark d-none"><i class="bi bi-pause-fill"></i> Pausado</span>
+    <select id="interval-select" class="form-select form-select-sm" style="width:auto;">
+      <option value="2">2s</option>
+      <option value="3" selected>3s</option>
+      <option value="5">5s</option>
+    </select>
+    <button id="logout-btn" class="btn btn-outline-danger btn-sm">Salir</button>
+  </div>
+</nav>
+
+<div class="container-fluid" style="padding-top:56px;">
+  <div class="row">
+    <div class="col-md-2 sidebar p-3">
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item"><a class="nav-link active" data-section="dashboard" href="#"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" data-section="cpu" href="#"><i class="bi bi-cpu me-2"></i>CPU</a></li>
+        <li class="nav-item"><a class="nav-link" data-section="memory" href="#"><i class="bi bi-memory me-2"></i>Memoria</a></li>
+        <li class="nav-item"><a class="nav-link" data-section="disk" href="#"><i class="bi bi-hdd me-2"></i>Disco</a></li>
+        <li class="nav-item"><a class="nav-link" data-section="network" href="#"><i class="bi bi-wifi me-2"></i>Red</a></li>
+        <li class="nav-item"><a class="nav-link" data-section="temperature" href="#"><i class="bi bi-thermometer-half me-2"></i>Temperatura</a></li>
+        <li class="nav-item"><a class="nav-link" data-section="processes" href="#"><i class="bi bi-list-task me-2"></i>Procesos</a></li>
+        <li class="nav-item"><hr class="border-secondary my-2"></li>
+        <li class="nav-item"><a class="nav-link" data-section="console" href="#"><i class="bi bi-terminal me-2"></i>Consola</a></li>
+      </ul>
+    </div>
+
+    <div class="col-md-10 p-3">
+
+      <div id="section-dashboard" class="section">
+        <div class="row g-3 mb-3">
+          <div class="col-md-3"><div class="card p-3"><h6>CPU</h6><h3 id="dash-cpu" class="mb-0">0%</h3></div></div>
+          <div class="col-md-3"><div class="card p-3"><h6>RAM</h6><h3 id="dash-ram" class="mb-0">0%</h3></div></div>
+          <div class="col-md-3"><div class="card p-3"><h6>Disco</h6><h3 id="dash-disk" class="mb-0">0%</h3></div></div>
+          <div class="col-md-3"><div class="card p-3"><h6>Temp</h6><h3 id="dash-temp" class="mb-0">--</h3></div></div>
+        </div>
+        <div class="row g-3">
+          <div class="col-md-6"><div class="card p-3"><h6>CPU (últimos 5 min)</h6><canvas id="mini-cpu-chart"></canvas></div></div>
+          <div class="col-md-6"><div class="card p-3"><h6>RAM (últimos 5 min)</h6><canvas id="mini-ram-chart"></canvas></div></div>
+        </div>
+      </div>
+
+      <div id="section-cpu" class="section d-none">
+        <div class="card p-3"><h5>CPU por núcleo</h5><canvas id="cpu-chart"></canvas></div>
+      </div>
+
+      <div id="section-memory" class="section d-none">
+        <div class="row g-3">
+          <div class="col-md-4"><div class="card p-3"><h6>Uso de RAM</h6><canvas id="ram-donut-chart"></canvas></div></div>
+          <div class="col-md-8"><div class="card p-3"><h6>RAM histórica</h6><canvas id="ram-hist-chart"></canvas></div></div>
+        </div>
+      </div>
+
+      <div id="section-disk" class="section d-none">
+        <div class="row g-3">
+          <div class="col-md-6"><div class="card p-3"><h6>Espacio en disco</h6><canvas id="disk-bar-chart"></canvas></div></div>
+          <div class="col-md-6"><div class="card p-3"><h6>I/O de disco</h6><canvas id="disk-io-chart"></canvas></div></div>
+        </div>
+      </div>
+
+      <div id="section-network" class="section d-none">
+        <div class="card p-3"><h6>Tráfico de red</h6><canvas id="network-chart"></canvas></div>
+      </div>
+
+      <div id="section-temperature" class="section d-none">
+        <div class="card p-3"><h6>Temperatura CPU</h6><canvas id="temp-chart"></canvas></div>
+      </div>
+
+      <div id="section-processes" class="section d-none">
+        <div class="card p-3">
+          <div class="row mb-3">
+            <div class="col-md-6"><input id="proc-filter" class="form-control" placeholder="Filtrar por nombre..."></div>
+            <div class="col-md-3"><select id="proc-sort" class="form-select"><option value="cpu">CPU</option><option value="memory">Memoria</option><option value="pid">PID</option><option value="name">Nombre</option></select></div>
+          </div>
+          <div style="max-height:600px;overflow-y:auto;">
+            <table class="table table-dark table-sm">
+              <thead><tr><th>PID</th><th>Nombre</th><th>Usuario</th><th>CPU%</th><th>RAM%</th><th>RAM MB</th><th>Estado</th><th>Comando</th><th></th></tr></thead>
+              <tbody id="proc-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="section-console" class="section d-none">
+        <div class="card p-3">
+          <div class="d-flex justify-content-between mb-2">
+            <h6 class="mb-0">Consola <small class="text-muted" id="console-timer"></small></h6>
+            <div>
+              <button id="console-auth-btn" class="btn btn-sm btn-outline-warning me-2">Autenticar PIN</button>
+              <button id="console-clear-btn" class="btn btn-sm btn-outline-secondary">Limpiar</button>
+            </div>
+          </div>
+          <div id="console-output"></div>
+          <div class="input-group mt-2">
+            <span class="input-group-text bg-dark text-muted border-secondary">$</span>
+            <input id="console-input" class="form-control bg-dark text-light border-secondary" placeholder="Escriba un comando..." disabled>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<script src="/static/js/charts.js"></script>
+<script src="/static/js/processes.js"></script>
+<script src="/static/js/console.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
