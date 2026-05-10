@@ -4,7 +4,7 @@ Chart.defaults.animation = false;
 
 const history = { cpu: [], ram: [], disk: [], net: [], temp: [] };
 
-function getHistoryPoints() { return Math.ceil(300000 / state.intervalMs); }
+function getHistoryPoints() { return 30; }
 
 function push(arr, val) { arr.push(val); const max = getHistoryPoints(); if (arr.length > max) arr.shift(); }
 
@@ -21,18 +21,7 @@ function createLineChart(ctx, datasetsOpts) {
   });
 }
 
-function createCPUChart(ctx) {
-  return new Chart(ctx, {
-    type: 'line',
-    data: { labels: [], datasets: [] },
-    options: {
-      responsive: true, maintainAspectRatio: true,
-      scales: { y: { min: 0, max: 100 } },
-      plugins: { legend: { position: 'bottom' } },
-      elements: { point: { radius: 0 } }
-    }
-  });
-}
+
 
 function createRAMDonut(ctx) {
   return new Chart(ctx, {
@@ -137,7 +126,7 @@ function createTempChart(ctx) {
 }
 
 let lastTempAlert = 0;
-let cpuChart, ramDonutChart, ramHistChart, diskBarChart, diskIOChart, networkChart, tempChart;
+let cpuCharts = [], ramDonutChart, ramHistChart, diskBarChart, diskIOChart, networkChart, tempChart;
 let miniCPUChart, miniRAMChart;
 
 function updateAllCharts(data) {
@@ -150,27 +139,43 @@ function updateAllCharts(data) {
 
   const labels = history.cpu.map(function() { return ''; });
 
-  if (cpuChart) {
-    const cores = data.cpu.percent_per_core;
-    if (cpuChart.data.datasets.length !== cores.length) {
-      cpuChart.data.datasets = cores.map(function(_, i) {
-        return {
-          label: 'Núcleo ' + i,
-          data: [],
-          borderColor: ['#388bfd','#3fb950','#d29922','#f85149','#db6d28','#bc8cff','#e6edf3','#8b949e'][i % 8],
-          fill: false, pointRadius: 0
-        };
-      });
-    }
-    cpuChart.data.labels = labels;
+  var cores = data.cpu.percent_per_core;
+  if (cpuCharts.length !== cores.length) {
+    var container = document.getElementById('cpu-charts');
+    container.innerHTML = '';
+    cpuCharts = [];
     cores.forEach(function(_, i) {
-      const val = history.cpu[history.cpu.length - 1] / cores.length;
-      cpuChart.data.datasets[i].data.push(val);
-      const max = getHistoryPoints();
-      if (cpuChart.data.datasets[i].data.length > max) cpuChart.data.datasets[i].data.shift();
+      var col = document.createElement('div');
+      col.className = 'col-md-' + (cores.length <= 2 ? '6' : '4');
+      var card = document.createElement('div');
+      card.className = 'card p-2';
+      var title = document.createElement('h6');
+      title.className = 'mb-2 text-center';
+      title.textContent = 'Núcleo ' + i;
+      card.appendChild(title);
+      var canvas = document.createElement('canvas');
+      canvas.id = 'core-chart-' + i;
+      card.appendChild(canvas);
+      col.appendChild(card);
+      container.appendChild(col);
+      cpuCharts.push(new Chart(canvas, {
+        type: 'line',
+        data: { labels: [], datasets: [{ label: 'Núcleo ' + i, data: [], borderColor: '#0d6efd', backgroundColor: 'rgba(13,110,253,0.1)', fill: true, pointRadius: 0 }] },
+        options: {
+          responsive: true, maintainAspectRatio: true,
+          scales: { y: { min: 0, max: 100 } },
+          plugins: { legend: { display: false } }
+        }
+      }));
     });
-    cpuChart.update('none');
   }
+  cores.forEach(function(coreVal, i) {
+    cpuCharts[i].data.labels = labels;
+    cpuCharts[i].data.datasets[0].data.push(coreVal);
+    var max = getHistoryPoints();
+    if (cpuCharts[i].data.datasets[0].data.length > max) cpuCharts[i].data.datasets[0].data.shift();
+    cpuCharts[i].update('none');
+  });
 
   if (ramDonutChart) {
     ramDonutChart.data.datasets[0].data = [data.memory.used_gb, data.memory.available_gb];
@@ -256,7 +261,7 @@ function updateAllCharts(data) {
 }
 
 function initCharts() {
-  cpuChart = createCPUChart(document.getElementById('cpu-chart'));
+
   ramDonutChart = createRAMDonut(document.getElementById('ram-donut-chart'));
   ramHistChart = createRAMHistChart(document.getElementById('ram-hist-chart'));
   diskBarChart = createDiskBarChart(document.getElementById('disk-bar-chart'));
