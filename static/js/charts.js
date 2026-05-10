@@ -1,5 +1,5 @@
-Chart.defaults.color = '#8b949e';
-Chart.defaults.borderColor = '#30363d';
+Chart.defaults.color = '#6c757d';
+Chart.defaults.borderColor = '#dee2e6';
 Chart.defaults.animation = false;
 
 const history = { cpu: [], ram: [], disk: [], net: [], temp: [] };
@@ -59,6 +59,19 @@ function createRAMHistChart(ctx) {
     options: {
       responsive: true, maintainAspectRatio: true,
       scales: { y: { min: 0, max: 100 } },
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+function createDiskBarChart(ctx) {
+  return new Chart(ctx, {
+    type: 'bar',
+    data: { labels: [], datasets: [] },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      indexAxis: 'y',
+      scales: { x: { min: 0, max: 100, title: { display: true, text: 'Uso %' } } },
       plugins: { legend: { display: false } }
     }
   });
@@ -124,7 +137,7 @@ function createTempChart(ctx) {
 }
 
 let lastTempAlert = 0;
-let cpuChart, ramDonutChart, ramHistChart, diskIOChart, networkChart, tempChart;
+let cpuChart, ramDonutChart, ramHistChart, diskBarChart, diskIOChart, networkChart, tempChart;
 let miniCPUChart, miniRAMChart;
 
 function updateAllCharts(data) {
@@ -168,6 +181,20 @@ function updateAllCharts(data) {
     ramHistChart.data.labels = labels;
     ramHistChart.data.datasets[0].data = history.ram.slice();
     ramHistChart.update('none');
+  }
+
+  if (diskBarChart) {
+    var partitions = data.disk;
+    diskBarChart.data.labels = partitions.map(function(p) { return p.mountpoint; });
+    var colors = partitions.map(function(p) { return p.percent > 80 ? '#dc3545' : (p.percent > 60 ? '#ffc107' : '#198754'); });
+    diskBarChart.data.datasets = [{
+      label: 'Uso %',
+      data: partitions.map(function(p) { return p.percent; }),
+      backgroundColor: colors,
+      borderWidth: 0,
+      borderRadius: 4
+    }];
+    diskBarChart.update('none');
   }
 
   if (diskIOChart) {
@@ -232,6 +259,7 @@ function initCharts() {
   cpuChart = createCPUChart(document.getElementById('cpu-chart'));
   ramDonutChart = createRAMDonut(document.getElementById('ram-donut-chart'));
   ramHistChart = createRAMHistChart(document.getElementById('ram-hist-chart'));
+  diskBarChart = createDiskBarChart(document.getElementById('disk-bar-chart'));
   diskIOChart = createDiskIOChart(document.getElementById('disk-io-chart'));
   networkChart = createNetworkChart(document.getElementById('network-chart'));
   tempChart = createTempChart(document.getElementById('temp-chart'));

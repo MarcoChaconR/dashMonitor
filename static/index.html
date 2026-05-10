@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<div id="login-overlay" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background:rgba(0,0,0,0.85);z-index:9999;">
+<div id="login-overlay" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background:rgba(245,245,245,0.95);z-index:9999;">
   <div class="card p-4" style="width:360px;">
     <h4 class="text-center mb-4">dashMonitor</h4>
     <div id="login-error" class="alert alert-danger d-none py-2"></div>
@@ -20,7 +20,7 @@
   </div>
 </div>
 
-<nav class="navbar navbar-dark bg-dark fixed-top px-3" style="z-index:1030;">
+<nav class="navbar navbar-light bg-light fixed-top px-3 border-bottom" style="z-index:1030;">
   <span class="navbar-brand mb-0 h6"><i class="bi bi-speedometer2 me-2"></i>dashMonitor</span>
   <div class="d-flex align-items-center gap-3">
     <small class="text-muted" id="navbar-hostname"></small>
@@ -46,7 +46,7 @@
         <li class="nav-item"><a class="nav-link" data-section="network" href="#"><i class="bi bi-wifi me-2"></i>Red</a></li>
         <li class="nav-item"><a class="nav-link" data-section="temperature" href="#"><i class="bi bi-thermometer-half me-2"></i>Temperatura</a></li>
         <li class="nav-item"><a class="nav-link" data-section="processes" href="#"><i class="bi bi-list-task me-2"></i>Procesos</a></li>
-        <li class="nav-item"><hr class="border-secondary my-2"></li>
+        <li class="nav-item"><hr class="border my-2"></li>
         <li class="nav-item"><a class="nav-link" data-section="console" href="#"><i class="bi bi-terminal me-2"></i>Consola</a></li>
       </ul>
     </div>
@@ -99,7 +99,7 @@
             <div class="col-md-3"><select id="proc-sort" class="form-select"><option value="cpu">CPU</option><option value="memory">Memoria</option><option value="pid">PID</option><option value="name">Nombre</option></select></div>
           </div>
           <div style="max-height:600px;overflow-y:auto;">
-            <table class="table table-dark table-sm">
+            <table class="table table-sm">
               <thead><tr><th>PID</th><th>Nombre</th><th>Usuario</th><th>CPU%</th><th>RAM%</th><th>RAM MB</th><th>Estado</th><th>Comando</th><th></th></tr></thead>
               <tbody id="proc-tbody"></tbody>
             </table>
@@ -118,8 +118,8 @@
           </div>
           <div id="console-output"></div>
           <div class="input-group mt-2">
-            <span class="input-group-text bg-dark text-muted border-secondary">$</span>
-            <input id="console-input" class="form-control bg-dark text-light border-secondary" placeholder="Escriba un comando..." disabled>
+            <span class="input-group-text bg-light text-muted border">$</span>
+            <input id="console-input" class="form-control" placeholder="Escriba un comando..." disabled>
           </div>
         </div>
       </div>
