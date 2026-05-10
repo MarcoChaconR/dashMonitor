@@ -88,7 +88,7 @@ function startPolling() {
   if (processesInterval) clearInterval(processesInterval);
   metricsInterval = setInterval(function() {
     if (state.paused) return;
-    if (Date.now() - state.lastActivity > 300000) {
+    if (Date.now() - state.lastActivity > 1200000) {
       state.paused = true;
       document.getElementById('pause-badge').classList.remove('d-none');
       return;
