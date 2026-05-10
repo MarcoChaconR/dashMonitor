@@ -3,7 +3,7 @@
 name="dashmonitor"
 description="dashMonitor system monitoring dashboard"
 command="/opt/dashmonitor/venv/bin/uvicorn"
-command_args="main:app --host 0.0.0.0 --port 9090 --workers 1"
+command_args="main:app --host 0.0.0.0 --port 9050 --workers 1"
 command_background="yes"
 command_user="root"
 directory="/opt/dashmonitor"

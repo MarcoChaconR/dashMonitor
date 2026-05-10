@@ -23,17 +23,43 @@ function createLineChart(ctx, datasetsOpts) {
 
 
 
+const centerTextPlugin = {
+  id: 'centerText',
+  beforeDraw: function(chart) {
+    var width = chart.chartArea ? (chart.chartArea.right - chart.chartArea.left) : chart.width;
+    var height = chart.chartArea ? (chart.chartArea.bottom - chart.chartArea.top) : chart.height;
+    var ctx = chart.ctx;
+    ctx.save();
+    var data = chart.data.datasets[0].data;
+    var total = data[0] + data[1];
+    var pct = total > 0 ? Math.round(data[0] / total * 100) : 0;
+    var centerX = chart.getDatasetMeta(0).data[0].x;
+    var centerY = chart.getDatasetMeta(0).data[0].y;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'bold 28px sans-serif';
+    ctx.fillStyle = '#212529';
+    ctx.fillText(pct + '%', centerX, centerY - 8);
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = '#6c757d';
+    ctx.fillText(data[0].toFixed(1) + ' / ' + total.toFixed(1) + ' GB', centerX, centerY + 18);
+    ctx.restore();
+  }
+};
+
 function createRAMDonut(ctx) {
   return new Chart(ctx, {
     type: 'doughnut',
     data: {
       labels: ['Usado', 'Disponible'],
-      datasets: [{ data: [0, 1], backgroundColor: ['#f85149', '#3fb950'], borderWidth: 0 }]
+      datasets: [{ data: [0, 1], backgroundColor: ['#dc3545', '#198754'], borderWidth: 0 }]
     },
+    plugins: [centerTextPlugin],
     options: {
       responsive: true, maintainAspectRatio: true,
       cutout: '75%',
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return ctx.parsed + ' GB'; } } } }
+      rotation: -Math.PI / 2,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return ctx.label + ': ' + ctx.parsed.toFixed(1) + ' GB'; } } } }
     }
   });
 }
