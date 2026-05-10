@@ -272,9 +272,17 @@ function updateAllCharts(data) {
 
   document.getElementById('dash-cpu').textContent = data.cpu.percent_total.toFixed(1) + '%';
   document.getElementById('dash-ram').textContent = data.memory.percent.toFixed(1) + '%';
-  const diskPct = data.disk.length > 0 ? data.disk[0].percent : 0;
+  var diskPct = data.disk.length > 0 ? data.disk[0].percent : 0;
   document.getElementById('dash-disk').textContent = diskPct.toFixed(1) + '%';
-  const tempVal = data.temperature.cpu_celsius;
+  var recvRate = data.network.reduce(function(s, n) { return s + n.recv_rate_kb_s; }, 0);
+  var sentRate = data.network.reduce(function(s, n) { return s + n.sent_rate_kb_s; }, 0);
+  document.getElementById('dash-net-recv').textContent = recvRate.toFixed(1) + ' KB/s';
+  document.getElementById('dash-net-sent').textContent = sentRate.toFixed(1) + ' KB/s';
+  var readRate = data.disk.length > 0 ? data.disk[0].read_mb_s : 0;
+  var writeRate = data.disk.length > 0 ? data.disk[0].write_mb_s : 0;
+  document.getElementById('dash-disk-read').textContent = readRate.toFixed(2) + ' MB/s';
+  document.getElementById('dash-disk-write').textContent = writeRate.toFixed(2) + ' MB/s';
+  var tempVal = data.temperature.cpu_celsius;
   const tempEl = document.getElementById('dash-temp');
   tempEl.textContent = tempVal !== null ? tempVal.toFixed(1) + '°C' : '--';
   tempEl.className = 'mb-0' + (tempVal !== null ? (tempVal > 85 ? ' cpu-crit' : tempVal > 70 ? ' cpu-warn' : ' cpu-ok') : '');
