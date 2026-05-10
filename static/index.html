@@ -100,7 +100,7 @@
           </div>
           <div style="max-height:600px;overflow-y:auto;">
             <table class="table table-sm">
-              <thead><tr><th>PID</th><th>Nombre</th><th>Usuario</th><th>CPU%</th><th>RAM%</th><th>RAM MB</th><th>Estado</th><th>Comando</th><th></th></tr></thead>
+              <thead><tr><th data-sort="pid" class="sortable" style="cursor:pointer">PID <span class="sort-indicator"></span></th><th data-sort="name" class="sortable" style="cursor:pointer">Nombre <span class="sort-indicator"></span></th><th>Usuario</th><th data-sort="cpu" class="sortable" style="cursor:pointer">CPU% <span class="sort-indicator"></span></th><th data-sort="memory" class="sortable" style="cursor:pointer">RAM% <span class="sort-indicator"></span></th><th>RAM MB</th><th>Estado</th><th>Comando</th><th></th></tr></thead>
               <tbody id="proc-tbody"></tbody>
             </table>
           </div>

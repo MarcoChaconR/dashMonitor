@@ -143,7 +143,7 @@ function fetchMetrics() {
 }
 
 function fetchProcesses() {
-  apiFetch('/api/processes?sort=' + currentSort + '&order=desc').then(function(data) {
+  apiFetch('/api/processes?sort=' + currentSort + '&order=' + currentOrder).then(function(data) {
     renderProcesses(data);
   }).catch(function(err) {
     if (err.message === 'Sesión expirada') return;

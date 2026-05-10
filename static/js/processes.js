@@ -1,5 +1,6 @@
 const allProcesses = [];
 let currentSort = 'cpu';
+let currentOrder = 'desc';
 
 function renderProcesses(data) {
   allProcesses.length = 0;
@@ -62,10 +63,38 @@ function escapeHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function updateSortIndicators() {
+  document.querySelectorAll('th.sortable').forEach(function(th) {
+    var span = th.querySelector('.sort-indicator');
+    var field = th.getAttribute('data-sort');
+    if (field === currentSort) {
+      span.textContent = currentOrder === 'desc' ? ' ▼' : ' ▲';
+    } else {
+      span.textContent = '';
+    }
+  });
+}
+
+function setSort(field) {
+  if (field === currentSort) {
+    currentOrder = currentOrder === 'desc' ? 'asc' : 'desc';
+  } else {
+    currentSort = field;
+    currentOrder = 'desc';
+  }
+  document.getElementById('proc-sort').value = currentSort;
+  updateSortIndicators();
+  if (state.token) fetchProcesses();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('proc-filter').addEventListener('input', applyFilter);
   document.getElementById('proc-sort').addEventListener('change', function() {
-    currentSort = this.value;
-    if (state.token) fetchProcesses();
+    setSort(this.value);
+  });
+  document.querySelectorAll('th.sortable').forEach(function(th) {
+    th.addEventListener('click', function() {
+      setSort(this.getAttribute('data-sort'));
+    });
   });
 });

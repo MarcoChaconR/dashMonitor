@@ -24,6 +24,9 @@ body { background: var(--bg-main); color: var(--text-main); }
 .cpu-warn  { color: var(--accent-yellow); }
 .cpu-crit  { color: var(--accent-red); }
 
+th.sortable:hover { color: var(--accent-blue); }
+th.sortable .sort-indicator { font-size: 0.7em; }
+
 #console-output {
   background: #f8f9fa; color: #212529;
   font-family: 'Courier New', monospace; font-size: 13px;
