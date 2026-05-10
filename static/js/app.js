@@ -74,7 +74,7 @@ function showSection(name) {
 }
 
 function setPollingInterval(ms) {
-  if ([2000, 3000, 5000].indexOf(ms) === -1) return;
+  if ([1000, 2000, 3000, 5000].indexOf(ms) === -1) return;
   state.intervalMs = ms;
   localStorage.setItem('dashmonitor_interval', ms);
   if (state.token) {
@@ -167,7 +167,7 @@ function updateNavbarInfo(data) {
 
 function initApp() {
   var savedInterval = parseInt(localStorage.getItem('dashmonitor_interval'), 10);
-  if ([2000, 3000, 5000].indexOf(savedInterval) === -1) savedInterval = 3000;
+  if ([1000, 2000, 3000, 5000].indexOf(savedInterval) === -1) savedInterval = 3000;
   state.intervalMs = savedInterval;
   document.getElementById('interval-select').value = String(savedInterval / 1000);
 
