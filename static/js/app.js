@@ -43,6 +43,7 @@ function login(username, password) {
     state.token = data.access_token;
     sessionStorage.setItem('dashmonitor_token', data.access_token);
     sessionStorage.setItem('dashmonitor_refresh', data.refresh_token);
+    setUsername();
     document.getElementById('login-overlay').classList.add('d-none');
     document.getElementById('login-error').classList.add('d-none');
     startPolling();
@@ -60,6 +61,7 @@ function logout() {
   document.getElementById('login-overlay').classList.remove('d-none');
   document.getElementById('login-user').value = '';
   document.getElementById('login-pass').value = '';
+  document.getElementById('navbar-username').textContent = '';
 }
 
 function showSection(name) {
@@ -150,6 +152,11 @@ function fetchProcesses() {
   });
 }
 
+function setUsername() {
+  var payload = parseJWT(state.token);
+  document.getElementById('navbar-username').textContent = payload && payload.sub ? payload.sub : '';
+}
+
 function updateNavbarInfo(data) {
   document.getElementById('navbar-hostname').textContent = data.hostname;
   var uptime = data.uptime_seconds;
@@ -169,6 +176,7 @@ function initApp() {
   var token = sessionStorage.getItem('dashmonitor_token');
   if (token) {
     state.token = token;
+    setUsername();
     document.getElementById('login-overlay').classList.add('d-none');
     startPolling();
     fetchMetrics();
