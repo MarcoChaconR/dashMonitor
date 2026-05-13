@@ -7,6 +7,19 @@ const state = {
   intervalMs: 3000
 };
 
+function getToken() { return localStorage.getItem('dashmonitor_token'); }
+function getRefreshToken() { return localStorage.getItem('dashmonitor_refresh'); }
+function getConsoleToken() { return localStorage.getItem('dashmonitor_console_token'); }
+function setTokens(at, rt) {
+  if (at) localStorage.setItem('dashmonitor_token', at);
+  if (rt) localStorage.setItem('dashmonitor_refresh', rt);
+}
+function clearTokens() {
+  localStorage.removeItem('dashmonitor_token');
+  localStorage.removeItem('dashmonitor_refresh');
+  localStorage.removeItem('dashmonitor_console_token');
+}
+
 let metricsInterval = null;
 let processesInterval = null;
 
@@ -41,8 +54,7 @@ function login(username, password) {
     });
   }).then(function(data) {
     state.token = data.access_token;
-    sessionStorage.setItem('dashmonitor_token', data.access_token);
-    sessionStorage.setItem('dashmonitor_refresh', data.refresh_token);
+    setTokens(data.access_token, data.refresh_token);
     setUsername();
     document.getElementById('login-overlay').classList.add('d-none');
     document.getElementById('login-error').classList.add('d-none');
@@ -55,8 +67,7 @@ function login(username, password) {
 function logout() {
   state.token = null;
   state.consoleToken = null;
-  sessionStorage.removeItem('dashmonitor_token');
-  sessionStorage.removeItem('dashmonitor_refresh');
+  clearTokens();
   stopPolling();
   document.getElementById('login-overlay').classList.remove('d-none');
   document.getElementById('login-user').value = '';
@@ -96,7 +107,7 @@ function startPolling() {
     fetchMetrics();
     var tokenRefreshTime = Date.now() + 480 * 60 * 1000 - 15 * 60 * 1000;
     var tokenAge = Date.now() - tokenRefreshTime; // not quite right
-    var refreshToken = sessionStorage.getItem('dashmonitor_refresh');
+    var refreshToken = getRefreshToken();
     if (refreshToken && state.token) {
       var payload = parseJWT(state.token);
       if (payload && payload.exp) {
@@ -108,8 +119,7 @@ function startPolling() {
           }).then(function(r) { return r.json(); }).then(function(d) {
             if (d.access_token) {
               state.token = d.access_token;
-              sessionStorage.setItem('dashmonitor_token', d.access_token);
-              sessionStorage.setItem('dashmonitor_refresh', d.refresh_token);
+              setTokens(d.access_token, d.refresh_token);
             }
           }).catch(function() {});
         }
@@ -165,6 +175,58 @@ function updateNavbarInfo(data) {
   document.getElementById('navbar-uptime').textContent = h + 'h ' + m + 'm';
 }
 
+function activateSession() {
+  var savedConsoleToken = getConsoleToken();
+  if (savedConsoleToken) {
+    var cp = parseJWT(savedConsoleToken);
+    if (cp && cp.exp && Date.now() < cp.exp * 1000) {
+      state.consoleToken = savedConsoleToken;
+      if (typeof consoleToken !== 'undefined') {
+        consoleToken = savedConsoleToken;
+        if (typeof startConsoleCountdown === 'function') {
+          startConsoleCountdown(cp.exp - Math.floor(Date.now() / 1000));
+        }
+        document.getElementById('console-input').disabled = false;
+      }
+    } else {
+      localStorage.removeItem('dashmonitor_console_token');
+    }
+  }
+  setUsername();
+  document.getElementById('login-overlay').classList.add('d-none');
+  document.getElementById('login-error').classList.add('d-none');
+  startPolling();
+  fetchMetrics();
+  fetchProcesses();
+}
+
+function restoreSession() {
+  var token = getToken();
+  var refreshToken = getRefreshToken();
+  if (!token) return;
+  var payload = parseJWT(token);
+  if (payload && payload.exp && Date.now() < payload.exp * 1000) {
+    state.token = token;
+    activateSession();
+    return;
+  }
+  if (refreshToken) {
+    fetch('/auth/refresh', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + refreshToken }
+    }).then(function(r) {
+      return r.json().then(function(d) {
+        if (!r.ok) throw new Error('Refresh failed');
+        return d;
+      });
+    }).then(function(data) {
+      state.token = data.access_token;
+      setTokens(data.access_token, data.refresh_token);
+      activateSession();
+    }).catch(function() {});
+  }
+}
+
 function initApp() {
   var savedInterval = parseInt(localStorage.getItem('dashmonitor_interval'), 10);
   if ([1000, 2000, 3000, 5000].indexOf(savedInterval) === -1) savedInterval = 3000;
@@ -172,21 +234,14 @@ function initApp() {
   document.getElementById('interval-select').value = String(savedInterval / 1000);
 
   initCharts();
-
-  var token = sessionStorage.getItem('dashmonitor_token');
-  if (token) {
-    state.token = token;
-    setUsername();
-    document.getElementById('login-overlay').classList.add('d-none');
-    startPolling();
-    fetchMetrics();
-    fetchProcesses();
-  }
+  restoreSession();
 
   document.querySelectorAll('.nav-link[data-section]').forEach(function(el) {
     el.addEventListener('click', function(e) {
       e.preventDefault();
-      showSection(this.getAttribute('data-section'));
+      var section = this.getAttribute('data-section');
+      showSection(section);
+      if (section === 'packages') fetchPackages();
     });
   });
 

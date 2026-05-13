@@ -20,6 +20,7 @@ function requestConsoleAuth() {
         body: JSON.stringify({ pin: result.value })
       }).then(function(data) {
         consoleToken = data.console_token;
+        localStorage.setItem('dashmonitor_console_token', data.console_token);
         document.getElementById('console-input').disabled = false;
         document.getElementById('console-input').focus();
         startConsoleCountdown(data.expires_in);
@@ -38,6 +39,7 @@ function startConsoleCountdown(seconds) {
     if (seconds <= 0) {
       clearInterval(consoleCountdown);
       consoleToken = null;
+      localStorage.removeItem('dashmonitor_console_token');
       document.getElementById('console-input').disabled = true;
       timerEl.textContent = '(expirado)';
       printConsole('\n' + '⚠ Token de consola expirado. Autentíquese de nuevo.');

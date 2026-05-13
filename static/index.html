@@ -49,6 +49,7 @@
         <li class="nav-item"><a class="nav-link" data-section="temperature" href="#"><i class="bi bi-thermometer-half me-2"></i>Temperatura</a></li>
         <li class="nav-item"><a class="nav-link" data-section="processes" href="#"><i class="bi bi-list-task me-2"></i>Procesos</a></li>
         <li class="nav-item"><hr class="border my-2"></li>
+        <li class="nav-item"><a class="nav-link" data-section="packages" href="#"><i class="bi bi-box me-2"></i>Paquetes</a></li>
         <li class="nav-item"><a class="nav-link" data-section="logs" href="#"><i class="bi bi-journal-text me-2"></i>Logs</a></li>
         <li class="nav-item"><a class="nav-link" data-section="console" href="#"><i class="bi bi-terminal me-2"></i>Consola</a></li>
       </ul>
@@ -116,6 +117,27 @@
         </div>
       </div>
 
+      <div id="section-packages" class="section d-none">
+        <div class="row g-3 mb-3">
+          <div class="col-md-4"><div class="card p-3"><h6>Paquetes instalados</h6><h3 id="pkg-total" class="mb-0">--</h3></div></div>
+          <div class="col-md-4"><div class="card p-3"><h6>Actualizaciones</h6><h3 id="pkg-updates" class="mb-0">--</h3></div></div>
+          <div class="col-md-4"><div class="card p-3"><h6>Último apk update</h6><small id="pkg-last-update" class="mb-0">--</small></div></div>
+        </div>
+        <div class="card p-3">
+          <div class="d-flex justify-content-between mb-2">
+            <h6 class="mb-0">Paquetes actualizables</h6>
+            <button id="pkg-refresh-btn" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-clockwise me-1"></i>Refrescar</button>
+          </div>
+          <div style="max-height:500px;overflow-y:auto;">
+            <table class="table table-sm">
+              <thead><tr><th>Paquete</th><th>Versión actual</th><th>Nueva versión</th></tr></thead>
+              <tbody id="pkg-tbody"></tbody>
+            </table>
+          </div>
+          <small id="pkg-no-updates" class="text-muted d-none"><i class="bi bi-check-circle me-1"></i>Todos los paquetes están actualizados</small>
+        </div>
+      </div>
+
       <div id="section-logs" class="section d-none">
         <div class="card p-3">
           <div class="row mb-3">
@@ -173,6 +195,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<script src="/static/js/packages.js"></script>
 <script src="/static/js/charts.js"></script>
 <script src="/static/js/processes.js"></script>
 <script src="/static/js/logs.js"></script>
