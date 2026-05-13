@@ -42,12 +42,16 @@
     <div class="col-md-2 sidebar p-3">
       <ul class="nav nav-pills flex-column">
         <li class="nav-item"><a class="nav-link active" data-section="dashboard" href="#"><i class="bi bi-grid me-2"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" data-section="system" href="#"><i class="bi bi-info-circle me-2"></i>Sistema</a></li>
         <li class="nav-item"><a class="nav-link" data-section="cpu" href="#"><i class="bi bi-cpu me-2"></i>CPU</a></li>
         <li class="nav-item"><a class="nav-link" data-section="memory" href="#"><i class="bi bi-memory me-2"></i>Memoria</a></li>
         <li class="nav-item"><a class="nav-link" data-section="disk" href="#"><i class="bi bi-hdd me-2"></i>Disco</a></li>
         <li class="nav-item"><a class="nav-link" data-section="network" href="#"><i class="bi bi-wifi me-2"></i>Red</a></li>
         <li class="nav-item"><a class="nav-link" data-section="temperature" href="#"><i class="bi bi-thermometer-half me-2"></i>Temperatura</a></li>
         <li class="nav-item"><a class="nav-link" data-section="processes" href="#"><i class="bi bi-list-task me-2"></i>Procesos</a></li>
+        <li class="nav-item"><hr class="border my-2"></li>
+        <li class="nav-item"><a class="nav-link" data-section="network-config" href="#"><i class="bi bi-router me-2"></i>Red Config</a></li>
+        <li class="nav-item"><a class="nav-link" data-section="firewall" href="#"><i class="bi bi-shield-lock me-2"></i>Firewall</a></li>
         <li class="nav-item"><hr class="border my-2"></li>
         <li class="nav-item"><a class="nav-link" data-section="packages" href="#"><i class="bi bi-box me-2"></i>Paquetes</a></li>
         <li class="nav-item"><a class="nav-link" data-section="logs" href="#"><i class="bi bi-journal-text me-2"></i>Logs</a></li>
@@ -74,6 +78,14 @@
           <div class="col-12 col-md-6"><div class="card p-3"><h6>CPU (últimos 5 min)</h6><canvas id="mini-cpu-chart"></canvas></div></div>
           <div class="col-12 col-md-6"><div class="card p-3"><h6>RAM (últimos 5 min)</h6><canvas id="mini-ram-chart"></canvas></div></div>
         </div>
+      </div>
+
+      <div id="section-system" class="section d-none">
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-md-6"><div class="card p-3 h-100"><h6><i class="bi bi-laptop me-1"></i> Sistema Operativo</h6><table class="table table-sm mt-2 mb-0"><tbody><tr><td class="text-muted">Hostname</td><td id="sys-hostname">-</td></tr><tr><td class="text-muted">OS</td><td id="sys-os">-</td></tr><tr><td class="text-muted">Kernel</td><td id="sys-kernel">-</td></tr><tr><td class="text-muted">Arquitectura</td><td id="sys-arch">-</td></tr><tr><td class="text-muted">Fecha/Hora</td><td id="sys-datetime">-</td></tr></tbody></table></div></div>
+          <div class="col-12 col-md-6"><div class="card p-3 h-100"><h6><i class="bi bi-cpu me-1"></i> Hardware</h6><table class="table table-sm mt-2 mb-0"><tbody><tr><td class="text-muted">CPU</td><td id="sys-cpu-model">-</td></tr><tr><td class="text-muted">Núcleos</td><td id="sys-cpu-cores">-</td></tr><tr><td class="text-muted">RAM total</td><td id="sys-ram">-</td></tr><tr><td class="text-muted">Paquetes</td><td id="sys-packages">-</td></tr><tr><td class="text-muted">Procesos activos</td><td id="sys-processes">-</td></tr></tbody></table></div></div>
+        </div>
+        <div class="card p-3"><h6><i class="bi bi-hdd me-1"></i> Discos</h6><div class="table-wrap mt-2"><table class="table table-sm mb-0"><thead><tr><th>Dispositivo</th><th>Montaje</th><th>FS</th><th>Tamaño</th></tr></thead><tbody id="sys-disks-tbody"></tbody></table></div></div>
       </div>
 
       <div id="section-cpu" class="section d-none">
@@ -115,6 +127,21 @@
             </table>
           </div>
         </div>
+      </div>
+
+      <div id="section-network-config" class="section d-none">
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-sm-6"><div class="card p-3 h-100"><h6><i class="bi bi-server me-1"></i> Hostname</h6><h4 class="mb-0 mt-2" id="net-hostname">-</h4></div></div>
+          <div class="col-12 col-sm-6"><div class="card p-3 h-100"><h6><i class="bi bi-globe me-1"></i> DNS</h6><ul class="list-group list-group-flush mt-2 mb-0" id="net-dns-list"></ul></div></div>
+        </div>
+        <div class="card p-3 mb-3"><h6><i class="bi bi-wifi me-1"></i> Interfaces</h6><div class="row g-3 mt-1" id="net-interfaces"></div></div>
+        <div class="card p-3"><h6><i class="bi bi-diagram-3 me-1"></i> Tabla de enrutamiento</h6><div class="table-wrap mt-2"><table class="table table-sm mb-0"><thead><tr><th>Destino</th><th>Gateway</th><th>Interfaz</th></tr></thead><tbody id="net-routes-tbody"></tbody></table></div></div>
+      </div>
+
+      <div id="section-firewall" class="section d-none">
+        <div class="card p-3 mb-3"><h6><i class="bi bi-plug me-1"></i> Puertos en escucha</h6><div class="table-wrap mt-2"><table class="table table-sm mb-0"><thead><tr><th>Puerto</th><th>Dirección</th><th>Proceso</th></tr></thead><tbody id="fw-ports-tbody"></tbody></table></div><small id="fw-no-ports" class="text-muted d-none mt-2"><i class="bi bi-check-circle me-1"></i>Sin resultados</small></div>
+        <div id="fw-iptables"></div>
+        <pre id="fw-nftables" class="d-none card p-3 mt-2" style="background:#f8f9fa;font-family:'Courier New',monospace;font-size:12px;max-height:400px;overflow-y:auto;"></pre>
       </div>
 
       <div id="section-packages" class="section d-none">
@@ -196,6 +223,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
 <script src="/static/js/packages.js"></script>
+<script src="/static/js/system.js"></script>
+<script src="/static/js/network.js"></script>
+<script src="/static/js/firewall.js"></script>
 <script src="/static/js/charts.js"></script>
 <script src="/static/js/processes.js"></script>
 <script src="/static/js/logs.js"></script>
