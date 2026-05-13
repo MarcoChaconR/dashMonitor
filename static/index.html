@@ -11,7 +11,7 @@
 <body>
 
 <div id="login-overlay" class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background:rgba(245,245,245,0.95);z-index:9999;">
-  <div class="card p-4" style="width:360px;">
+  <div class="card p-4" style="width:360px;max-width:90vw;">
     <h4 class="text-center mb-4">dashMonitor</h4>
     <div id="login-error" class="alert alert-danger d-none py-2"></div>
     <input id="login-user" class="form-control mb-2" placeholder="Usuario">
@@ -59,20 +59,20 @@
 
       <div id="section-dashboard" class="section">
         <div class="row g-3 mb-3">
-          <div class="col-md-3"><div class="card p-3"><h6>CPU</h6><h3 id="dash-cpu" class="mb-0">0%</h3></div></div>
-          <div class="col-md-3"><div class="card p-3"><h6>RAM</h6><h3 id="dash-ram" class="mb-0">0%</h3></div></div>
-          <div class="col-md-3"><div class="card p-3"><h6>Disco</h6><h3 id="dash-disk" class="mb-0">0%</h3></div></div>
-          <div class="col-md-3"><div class="card p-3"><h6>Temp</h6><h3 id="dash-temp" class="mb-0">--</h3></div></div>
+          <div class="col-6 col-md-3"><div class="card p-3"><h6>CPU</h6><h3 id="dash-cpu" class="mb-0">0%</h3></div></div>
+          <div class="col-6 col-md-3"><div class="card p-3"><h6>RAM</h6><h3 id="dash-ram" class="mb-0">0%</h3></div></div>
+          <div class="col-6 col-md-3"><div class="card p-3"><h6>Disco</h6><h3 id="dash-disk" class="mb-0">0%</h3></div></div>
+          <div class="col-6 col-md-3"><div class="card p-3"><h6>Temp</h6><h3 id="dash-temp" class="mb-0">--</h3></div></div>
         </div>
         <div class="row g-3 mb-3">
-          <div class="col-md-3"><div class="card p-3"><h6>Red ↓</h6><h3 id="dash-net-recv" class="mb-0">0 KB/s</h3></div></div>
-          <div class="col-md-3"><div class="card p-3"><h6>Red ↑</h6><h3 id="dash-net-sent" class="mb-0">0 KB/s</h3></div></div>
-          <div class="col-md-3"><div class="card p-3"><h6>Disco I/O R</h6><h3 id="dash-disk-read" class="mb-0">0 MB/s</h3></div></div>
-          <div class="col-md-3"><div class="card p-3"><h6>Disco I/O W</h6><h3 id="dash-disk-write" class="mb-0">0 MB/s</h3></div></div>
+          <div class="col-6 col-md-3"><div class="card p-3"><h6>Red ↓</h6><h3 id="dash-net-recv" class="mb-0">0 KB/s</h3></div></div>
+          <div class="col-6 col-md-3"><div class="card p-3"><h6>Red ↑</h6><h3 id="dash-net-sent" class="mb-0">0 KB/s</h3></div></div>
+          <div class="col-6 col-md-3"><div class="card p-3"><h6>Disco I/O R</h6><h3 id="dash-disk-read" class="mb-0">0 MB/s</h3></div></div>
+          <div class="col-6 col-md-3"><div class="card p-3"><h6>Disco I/O W</h6><h3 id="dash-disk-write" class="mb-0">0 MB/s</h3></div></div>
         </div>
         <div class="row g-3">
-          <div class="col-md-6"><div class="card p-3"><h6>CPU (últimos 5 min)</h6><canvas id="mini-cpu-chart"></canvas></div></div>
-          <div class="col-md-6"><div class="card p-3"><h6>RAM (últimos 5 min)</h6><canvas id="mini-ram-chart"></canvas></div></div>
+          <div class="col-12 col-md-6"><div class="card p-3"><h6>CPU (últimos 5 min)</h6><canvas id="mini-cpu-chart"></canvas></div></div>
+          <div class="col-12 col-md-6"><div class="card p-3"><h6>RAM (últimos 5 min)</h6><canvas id="mini-ram-chart"></canvas></div></div>
         </div>
       </div>
 
@@ -82,15 +82,15 @@
 
       <div id="section-memory" class="section d-none">
         <div class="row g-3">
-          <div class="col-md-4"><div class="card p-3"><h6>Uso de RAM</h6><canvas id="ram-donut-chart"></canvas></div></div>
-          <div class="col-md-8"><div class="card p-3"><h6>RAM histórica</h6><canvas id="ram-hist-chart"></canvas></div></div>
+          <div class="col-12 col-md-4"><div class="card p-3"><h6>Uso de RAM</h6><canvas id="ram-donut-chart"></canvas></div></div>
+          <div class="col-12 col-md-8"><div class="card p-3"><h6>RAM histórica</h6><canvas id="ram-hist-chart"></canvas></div></div>
         </div>
       </div>
 
       <div id="section-disk" class="section d-none">
         <div class="row g-3">
-          <div class="col-md-6"><div class="card p-3"><h6>Espacio en disco</h6><canvas id="disk-bar-chart"></canvas></div></div>
-          <div class="col-md-6"><div class="card p-3"><h6>I/O de disco</h6><canvas id="disk-io-chart"></canvas></div></div>
+          <div class="col-12 col-md-6"><div class="card p-3"><h6>Espacio en disco</h6><canvas id="disk-bar-chart"></canvas></div></div>
+          <div class="col-12 col-md-6"><div class="card p-3"><h6>I/O de disco</h6><canvas id="disk-io-chart"></canvas></div></div>
         </div>
       </div>
 
@@ -104,11 +104,11 @@
 
       <div id="section-processes" class="section d-none">
         <div class="card p-3">
-          <div class="row mb-3">
-            <div class="col-md-6"><input id="proc-filter" class="form-control" placeholder="Filtrar por nombre..."></div>
-            <div class="col-md-3"><select id="proc-sort" class="form-select"><option value="cpu">CPU</option><option value="memory">Memoria</option><option value="pid">PID</option><option value="name">Nombre</option></select></div>
+          <div class="row mb-3 g-2">
+            <div class="col-7 col-md-6"><input id="proc-filter" class="form-control form-control-sm" placeholder="Filtrar por nombre..."></div>
+            <div class="col-5 col-md-3"><select id="proc-sort" class="form-select form-select-sm"><option value="cpu">CPU</option><option value="memory">Memoria</option><option value="pid">PID</option><option value="name">Nombre</option></select></div>
           </div>
-          <div style="max-height:600px;overflow-y:auto;">
+          <div class="table-wrap" style="max-height:600px;">
             <table class="table table-sm">
               <thead><tr><th data-sort="pid" class="sortable" style="cursor:pointer">PID <span class="sort-indicator"></span></th><th data-sort="name" class="sortable" style="cursor:pointer">Nombre <span class="sort-indicator"></span></th><th>Usuario</th><th data-sort="cpu" class="sortable" style="cursor:pointer">CPU% <span class="sort-indicator"></span></th><th data-sort="memory" class="sortable" style="cursor:pointer">RAM% <span class="sort-indicator"></span></th><th>RAM MB</th><th>Estado</th><th>Comando</th><th></th></tr></thead>
               <tbody id="proc-tbody"></tbody>
@@ -119,16 +119,16 @@
 
       <div id="section-packages" class="section d-none">
         <div class="row g-3 mb-3">
-          <div class="col-md-4"><div class="card p-3"><h6>Paquetes instalados</h6><h3 id="pkg-total" class="mb-0">--</h3></div></div>
-          <div class="col-md-4"><div class="card p-3"><h6>Actualizaciones</h6><h3 id="pkg-updates" class="mb-0">--</h3></div></div>
-          <div class="col-md-4"><div class="card p-3"><h6>Último apk update</h6><small id="pkg-last-update" class="mb-0">--</small></div></div>
+          <div class="col-6 col-md-4"><div class="card p-3"><h6>Paquetes instalados</h6><h3 id="pkg-total" class="mb-0">--</h3></div></div>
+          <div class="col-6 col-md-4"><div class="card p-3"><h6>Actualizaciones</h6><h3 id="pkg-updates" class="mb-0">--</h3></div></div>
+          <div class="col-12 col-md-4"><div class="card p-3"><h6>Último apk update</h6><small id="pkg-last-update" class="mb-0">--</small></div></div>
         </div>
         <div class="card p-3">
           <div class="d-flex justify-content-between mb-2">
             <h6 class="mb-0">Paquetes actualizables</h6>
             <button id="pkg-refresh-btn" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-clockwise me-1"></i>Refrescar</button>
           </div>
-          <div style="max-height:500px;overflow-y:auto;">
+          <div class="table-wrap" style="max-height:500px;">
             <table class="table table-sm">
               <thead><tr><th>Paquete</th><th>Versión actual</th><th>Nueva versión</th></tr></thead>
               <tbody id="pkg-tbody"></tbody>
@@ -140,29 +140,29 @@
 
       <div id="section-logs" class="section d-none">
         <div class="card p-3">
-          <div class="row mb-3">
-            <div class="col-md-3">
-              <select id="log-source" class="form-select"></select>
+          <div class="row mb-3 g-2">
+            <div class="col-12 col-sm-6 col-md-3">
+              <select id="log-source" class="form-select form-select-sm"></select>
             </div>
-            <div class="col-md-2">
-              <input id="log-lines" class="form-control" type="number" value="50" min="10" max="5000" step="10">
+            <div class="col-6 col-sm-3 col-md-2">
+              <input id="log-lines" class="form-control form-control-sm" type="number" value="50" min="10" max="5000" step="10">
             </div>
-            <div class="col-md-3">
-              <input id="log-filter" class="form-control" placeholder="Filtrar (opcional)...">
+            <div class="col-12 col-sm-6 col-md-3">
+              <input id="log-filter" class="form-control form-control-sm" placeholder="Filtrar (opcional)...">
             </div>
-            <div class="col-md-2">
+            <div class="col-6 col-sm-3 col-md-2">
               <div class="form-check form-switch mt-2">
                 <input class="form-check-input" type="checkbox" id="log-tail">
                 <label class="form-check-label" for="log-tail">Tail</label>
               </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-6 col-sm-3 col-md-2">
               <button id="log-refresh-btn" class="btn btn-outline-primary btn-sm w-100"><i class="bi bi-arrow-clockwise"></i> Cargar</button>
             </div>
           </div>
-          <div class="row mb-2">
-            <div class="col-md-6"><small class="text-muted" id="log-info"></small></div>
-            <div class="col-md-6 text-end">
+          <div class="row mb-2 g-2">
+            <div class="col-6"><small class="text-muted" id="log-info"></small></div>
+            <div class="col-6 text-end">
               <button id="log-custom-btn" class="btn btn-sm btn-outline-secondary">Ruta personalizada...</button>
             </div>
           </div>
@@ -172,10 +172,10 @@
 
       <div id="section-console" class="section d-none">
         <div class="card p-3">
-          <div class="d-flex justify-content-between mb-2">
+          <div class="d-flex flex-wrap justify-content-between mb-2 gap-2">
             <h6 class="mb-0">Consola <small class="text-muted" id="console-timer"></small></h6>
-            <div>
-              <button id="console-auth-btn" class="btn btn-sm btn-outline-warning me-2">Autenticar PIN</button>
+            <div class="d-flex gap-2">
+              <button id="console-auth-btn" class="btn btn-sm btn-outline-warning">Autenticar PIN</button>
               <button id="console-clear-btn" class="btn btn-sm btn-outline-secondary">Limpiar</button>
             </div>
           </div>
