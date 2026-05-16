@@ -60,9 +60,9 @@ dashMonitor está diseñado para correr en servidores con **recursos muy limitad
 
 ## 🧱 Requisitos
 
-- **Sistema:** Alpine Linux (corriendo como root)
+- **Sistema:** Alpine Linux, Debian/Ubuntu, Fedora, RHEL, Arch (corriendo como root)
 - **Python:** 3.9+
-- **Dependencias del sistema:** `python3`, `py3-pip`, `python3-dev`, `gcc`, `musl-dev`, `linux-pam`, `linux-pam-dev`
+- **Gestor de servicios:** OpenRC (Alpine) o systemd (demás distros)
 
 ---
 
@@ -96,23 +96,24 @@ El instalador detecta automáticamente tu distribución (Alpine Linux, Debian/Ub
 
 ### Instalación manual
 
+#### Alpine Linux (OpenRC)
+
 ```bash
 # 1. Dependencias
 apk add python3 py3-pip python3-dev gcc musl-dev linux-pam linux-pam-dev
 
-# 2. Copiar proyecto
-mkdir -p /opt/dashmonitor
-cp -r * /opt/dashmonitor/
-rm /opt/dashmonitor/install.sh /opt/dashmonitor/dashmonitor.openrc
+# 2. Clonar proyecto
+git clone https://github.com/MarcoChaconR/dashMonitor.git /opt/dashmonitor
+cd /opt/dashmonitor
 
 # 3. Entorno virtual
-python3 -m venv /opt/dashmonitor/venv
-. /opt/dashmonitor/venv/bin/activate
-pip install -r /opt/dashmonitor/requirements.txt
+python3 -m venv venv
+. venv/bin/activate
+pip install -r requirements.txt
 
 # 4. Configurar
 SECRET_KEY=$(python3 -c "import secrets; print(secrets.token_hex(32))")
-cat > /opt/dashmonitor/.env << EOF
+cat > .env << EOF
 SECRET_KEY=$SECRET_KEY
 CONSOLE_PIN_HASH=<hash_bcrypt_del_pin>
 ALLOWED_GROUP=wheel
@@ -120,13 +121,64 @@ HOST=0.0.0.0
 PORT=9050
 ENV=production
 EOF
-chmod 600 /opt/dashmonitor/.env
+chmod 600 .env
 
 # 5. Servicio OpenRC
 cp dashmonitor.openrc /etc/init.d/dashmonitor
 chmod +x /etc/init.d/dashmonitor
 rc-update add dashmonitor default
 rc-service dashmonitor start
+```
+
+#### Debian/Ubuntu (systemd)
+
+```bash
+# 1. Dependencias
+apt update && apt install -y python3 python3-pip python3-venv python3-dev gcc libpam0g-dev git
+
+# 2. Clonar proyecto
+git clone https://github.com/MarcoChaconR/dashMonitor.git /opt/dashmonitor
+cd /opt/dashmonitor
+
+# 3. Entorno virtual
+python3 -m venv venv
+. venv/bin/activate
+pip install -r requirements.txt
+
+# 4. Configurar
+SECRET_KEY=$(python3 -c "import secrets; print(secrets.token_hex(32))")
+cat > .env << EOF
+SECRET_KEY=$SECRET_KEY
+CONSOLE_PIN_HASH=<hash_bcrypt_del_pin>
+ALLOWED_GROUP=sudo
+HOST=0.0.0.0
+PORT=9050
+ENV=production
+EOF
+chmod 600 .env
+
+# 5. Servicio systemd
+cat > /etc/systemd/system/dashmonitor.service << 'EOF'
+[Unit]
+Description=dashMonitor system monitoring dashboard
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/dashmonitor
+EnvironmentFile=/opt/dashmonitor/.env
+ExecStart=/opt/dashmonitor/venv/bin/uvicorn main:app --host 0.0.0.0 --port 9050 --workers 1
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable dashmonitor
+systemctl start dashmonitor
 ```
 
 ---
