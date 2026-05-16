@@ -220,6 +220,7 @@ function initApp() {
       var section = this.getAttribute('data-section');
       showSection(section);
       if (section === 'packages') fetchPackages();
+      if (section === 'logs') loadLogSources();
     });
   });
 
