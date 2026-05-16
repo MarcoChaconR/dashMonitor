@@ -71,21 +71,28 @@ dashMonitor está diseñado para correr en servidores con **recursos muy limitad
 ### Instalación automática (recomendada)
 
 ```bash
+curl -fsSL https://raw.githubusercontent.com/MarcoChaconR/dashMonitor/main/install.sh | bash
+```
+
+O clonando y ejecutando localmente:
+
+```bash
 git clone https://github.com/MarcoChaconR/dashMonitor.git
 cd dashMonitor
 chmod +x install.sh
 ./install.sh
 ```
 
-El instalador te pedirá un **PIN de consola** y configurará todo automáticamente:
-1. Instala dependencias del sistema
-2. Copia archivos a `/opt/dashmonitor/`
+El instalador detecta automáticamente tu distribución (Alpine Linux, Debian/Ubuntu, Fedora, RHEL, Arch) y:
+
+1. Instala dependencias del sistema según tu distro
+2. Descarga o copia los archivos a `/opt/dashmonitor/`
 3. Crea un entorno virtual Python
 4. Instala dependencias pip
-5. Genera `SECRET_KEY` y `CONSOLE_PIN_HASH`
+5. Genera `SECRET_KEY` y te pide el **PIN de consola**
 6. Crea el archivo `.env` con permisos 600
-7. Registra el servicio en OpenRC
-8. Inicia el servicio
+7. Registra e inicia el servicio (OpenRC o systemd)
+8. Muestra la URL de acceso
 
 ### Instalación manual
 
