@@ -20,6 +20,9 @@
   <img src="https://img.shields.io/badge/Secure-JWT%20%2B%20PAM-blueviolet?style=flat-square" alt="Auth">
 </p>
 
+> ⚠️ **Disclaimer: Vibe Coding**  
+> Este proyecto fue desarrollado en sesiones de *vibe coding* con IA generativa. El código es funcional pero puede contener antipatrones o áreas de mejora. Se aceptan revisiones, issues y pull requests constructivos.
+
 ---
 
 ## ✨ Funcionalidades
@@ -39,6 +42,19 @@
 | 👤 **Autenticación** | Login con PAM (usuarios del sistema), JWT con refresh token, rate limiting |
 | 🔒 **Seguridad** | Headers HTTP estrictos, console con PIN + JWT, PIDs protegidos |
 | 📱 **Responsivo** | Adaptable a desktop y móvil con sidebar colapsable |
+
+---
+
+## 🐭 Filosofía: mínimo consumo de recursos
+
+dashMonitor está diseñado para correr en servidores con **recursos muy limitados** (256 MB RAM, CPU de un solo núcleo, Alpine Linux). Cada decisión técnica prioriza un consumo mínimo de CPU y RAM:
+
+- **Polling eficiente:** 3s de intervalo con pausa automática al perder foco
+- **Sin dependencias pesadas:** Chart.js liviano en frontend, psutil nativo en backend
+- **Sin base de datos:** todo en memoria, sin I/O de disco adicional
+- **Ideal para:** Raspberry Pi, VPS pequeños, servidores domésticos, equipos reciclados
+
+> 💡 ¿Corrés dashMonitor en un equipo con < 128 MB RAM? ¡Contanos tu experiencia!
 
 ---
 
@@ -243,6 +259,19 @@ Accede a `http://localhost:9050` para el panel y `http://localhost:9050/docs` pa
 
 ---
 
+## 🤝 Contribuciones
+
+¡Los aportes de la comunidad son bienvenidos y necesarios!
+
+- 🐛 Reportá bugs o sugerí features en [issues](https://github.com/MarcoChaconR/dashMonitor/issues)
+- 🔧 Enviá un Pull Request con mejoras de código, documentación o traducciones
+- ⭐ Dale estrella al repo si te resulta útil
+- 💬 Compartí tu experiencia abriendo un issue de discusión
+
+Este proyecto vive y mejora gracias a quien se toma el tiempo de contribuir. Toda ayuda suma.
+
+---
+
 ## 📄 Licencia
 
 Este proyecto está licenciado bajo **GNU General Public License v3.0**.
@@ -250,5 +279,5 @@ Este proyecto está licenciado bajo **GNU General Public License v3.0**.
 ---
 
 <p align="center">
-  <sub>Hecho con ❤️ para la administración de servidores Alpine Linux</sub>
+  <sub>Hecho con ❤️ para la administración de servidores Alpine Linux — contribuciones bienvenidas</sub>
 </p>
