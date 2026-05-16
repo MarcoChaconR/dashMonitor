@@ -8,7 +8,7 @@
 <h1 align="center">📊 dashMonitor</h1>
 
 <p align="center">
-  <strong>Panel de monitoreo en tiempo real para servidores Alpine Linux</strong>
+  <strong>Panel de monitoreo en tiempo real para servidores Linux</strong>
   <br>
   Administra tu servidor desde el navegador: métricas, procesos, logs, firewall, red, paquetes y más.
 </p>
@@ -246,11 +246,12 @@ dashMonitor/
 │   ├── network.py          # Configuración de red
 │   └── firewall.py         # Reglas de firewall
 ├── services/
+│   ├── distro_utils.py     # Detección multi-distro (apk/dpkg/rpm/pacman)
 │   ├── auth_service.py     # PAM, JWT, rate limiting
 │   ├── system_metrics.py   # CPU, RAM, disco, red, temperatura
 │   ├── console_service.py  # Shell con blocklist
 │   ├── log_service.py      # Descubrimiento y lectura de logs
-│   ├── package_service.py  # apk wrapper con caché
+│   ├── package_service.py  # Paquetes y actualizaciones (multi-distro)
 │   ├── system_info_service.py
 │   ├── network_service.py  # Interfaces, routing, DNS
 │   └── firewall_service.py # iptables/nftables parsing
@@ -270,7 +271,8 @@ dashMonitor/
 │       └── system.js       # System info UI
 ├── requirements.txt        # Dependencias Python
 ├── install.sh              # Instalador Alpine
-├── dashmonitor.openrc      # Servicio OpenRC
+├── dashmonitor.openrc      # Servicio OpenRC (Alpine)
+├── dashmonitor.service     # Servicio systemd (Fedora, Debian, Arch...)
 └── README.md               # Este archivo
 ```
 

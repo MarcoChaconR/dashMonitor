@@ -66,5 +66,5 @@ def _get_storage_info():
 
 
 def _get_package_count():
-    output = _run(["apk", "list", "-I"])
-    return len([l for l in output.split("\n") if l.strip()])
+    from services import distro_utils
+    return len(distro_utils.package_list())

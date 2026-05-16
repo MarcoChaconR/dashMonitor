@@ -92,9 +92,23 @@ setup_venv() {
     pip install -q -r "$INSTALL_DIR/requirements.txt"
 }
 
+# ---------- detect allowed group ----------
+detect_group() {
+    if [ -f /etc/alpine-release ] || [ -f /etc/fedora-release ] || [ -f /etc/redhat-release ]; then
+        echo "wheel"
+    elif command -v apt-get >/dev/null 2>&1; then
+        echo "sudo"
+    else
+        echo "wheel"
+    fi
+}
+
 # ---------- configure .env ----------
 setup_env() {
     blue "=== Configurando variables de entorno ==="
+
+    ALLOWED_GROUP=$(detect_group)
+    blue "  Grupo detectado: $ALLOWED_GROUP"
 
     SECRET_KEY=$(python3 -c "import secrets; print(secrets.token_hex(32))")
 
@@ -117,7 +131,7 @@ sys.stdout.write(bcrypt.hash(sys.argv[1]))
     cat > "$INSTALL_DIR/.env" << EOF
 SECRET_KEY=$SECRET_KEY
 CONSOLE_PIN_HASH=$PIN_HASH
-ALLOWED_GROUP=wheel
+ALLOWED_GROUP=$ALLOWED_GROUP
 HOST=0.0.0.0
 PORT=$PORT
 ENV=production
@@ -157,23 +171,7 @@ EOSCRIPT
             ;;
 
         debian|fedora|rhel|arch)
-            cat > /etc/systemd/system/dashmonitor.service << 'EOSERVICE'
-[Unit]
-Description=dashMonitor system monitoring dashboard
-After=network.target
-
-[Service]
-Type=simple
-User=root
-WorkingDirectory=/opt/dashmonitor
-EnvironmentFile=/opt/dashmonitor/.env
-ExecStart=/opt/dashmonitor/venv/bin/uvicorn main:app --host 0.0.0.0 --port 9050 --workers 1
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy=multi-user.target
-EOSERVICE
+            cp "$INSTALL_DIR/dashmonitor.service" /etc/systemd/system/dashmonitor.service
             systemctl daemon-reload
             systemctl enable dashmonitor
             systemctl start dashmonitor

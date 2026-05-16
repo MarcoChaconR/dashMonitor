@@ -2,14 +2,62 @@ import os
 import glob
 from collections import OrderedDict
 
+from services import distro_utils
+
 LOG_DIRS = ["/var/log"]
-KNOWN_SOURCES = OrderedDict([
-    ("messages", "/var/log/messages"),
-    ("dmesg", "/var/log/dmesg"),
-    ("apk", "/var/log/apk.log"),
-    ("dashmonitor", "/var/log/dashmonitor.log"),
-    ("acpid", "/var/log/acpid.log"),
-])
+
+KNOWN_SOURCES = OrderedDict()
+
+def _init_sources():
+    global KNOWN_SOURCES
+    distro = distro_utils.DISTRO_ID
+    like = distro_utils.DISTRO_LIKE
+    pm = distro_utils.PACKAGE_MANAGER
+
+    base = [
+        ("dashmonitor", "/var/log/dashmonitor.log"),
+        ("messages", "/var/log/messages"),
+        ("dmesg", "/var/log/dmesg"),
+    ]
+
+    if distro == "alpine":
+        base += [
+            ("apk", "/var/log/apk.log"),
+            ("acpid", "/var/log/acpid.log"),
+        ]
+    elif distro in ("debian", "ubuntu") or "debian" in like:
+        base += [
+            ("syslog", "/var/log/syslog"),
+            ("auth", "/var/log/auth.log"),
+            ("kern", "/var/log/kern.log"),
+            ("dpkg", "/var/log/dpkg.log"),
+            ("apt", "/var/log/apt/term.log"),
+        ]
+    elif distro in ("fedora", "rhel", "centos") or "fedora" in like:
+        base += [
+            ("secure", "/var/log/secure"),
+            ("maillog", "/var/log/maillog"),
+            ("cron", "/var/log/cron"),
+            ("dnf", "/var/log/dnf.log"),
+            ("boot", "/var/log/boot.log"),
+        ]
+    elif distro == "arch":
+        base += [
+            ("pacman", "/var/log/pacman.log"),
+        ]
+
+    if pm == "dpkg":
+        base.append(("dpkg", "/var/log/dpkg.log"))
+    elif pm == "rpm":
+        base.append(("dnf", "/var/log/dnf.log"))
+
+    KNOWN_SOURCES = OrderedDict()
+    for name, path in base:
+        if name not in KNOWN_SOURCES:
+            KNOWN_SOURCES[name] = path
+
+
+_init_sources()
 
 
 def discover_log_sources() -> list[dict]:

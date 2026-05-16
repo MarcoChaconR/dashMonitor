@@ -5,7 +5,15 @@ load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 CONSOLE_PIN_HASH = os.getenv("CONSOLE_PIN_HASH")
-ALLOWED_GROUP = os.getenv("ALLOWED_GROUP", "wheel")
+
+_default_group = "wheel"
+try:
+    from services.distro_utils import default_group
+    _default_group = default_group()
+except Exception:
+    pass
+
+ALLOWED_GROUP = os.getenv("ALLOWED_GROUP", _default_group)
 HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", 9050))
 ENV = os.getenv("ENV", "production")
