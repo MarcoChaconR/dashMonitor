@@ -42,37 +42,12 @@ function apiFetch(url, options) {
   });
 }
 
-function login(username, password) {
-  return fetch('/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: username, password: password })
-  }).then(function(r) {
-    return r.json().then(function(d) {
-      if (!r.ok) throw new Error(d.detail || 'Error de autenticación');
-      return d;
-    });
-  }).then(function(data) {
-    state.token = data.access_token;
-    setTokens(data.access_token, data.refresh_token);
-    setUsername();
-    document.getElementById('login-overlay').classList.add('d-none');
-    document.getElementById('login-error').classList.add('d-none');
-    startPolling();
-    fetchMetrics();
-    fetchProcesses();
-  });
-}
-
 function logout() {
   state.token = null;
   state.consoleToken = null;
   clearTokens();
   stopPolling();
-  document.getElementById('login-overlay').classList.remove('d-none');
-  document.getElementById('login-user').value = '';
-  document.getElementById('login-pass').value = '';
-  document.getElementById('navbar-username').textContent = '';
+  window.location.href = '/login';
 }
 
 function showSection(name) {
@@ -105,8 +80,6 @@ function startPolling() {
       return;
     }
     fetchMetrics();
-    var tokenRefreshTime = Date.now() + 480 * 60 * 1000 - 15 * 60 * 1000;
-    var tokenAge = Date.now() - tokenRefreshTime; // not quite right
     var refreshToken = getRefreshToken();
     if (refreshToken && state.token) {
       var payload = parseJWT(state.token);
@@ -193,8 +166,6 @@ function activateSession() {
     }
   }
   setUsername();
-  document.getElementById('login-overlay').classList.add('d-none');
-  document.getElementById('login-error').classList.add('d-none');
   startPolling();
   fetchMetrics();
   fetchProcesses();
@@ -203,7 +174,10 @@ function activateSession() {
 function restoreSession() {
   var token = getToken();
   var refreshToken = getRefreshToken();
-  if (!token) return;
+  if (!token) {
+    window.location.href = '/login';
+    return;
+  }
   var payload = parseJWT(token);
   if (payload && payload.exp && Date.now() < payload.exp * 1000) {
     state.token = token;
@@ -223,7 +197,11 @@ function restoreSession() {
       state.token = data.access_token;
       setTokens(data.access_token, data.refresh_token);
       activateSession();
-    }).catch(function() {});
+    }).catch(function() {
+      window.location.href = '/login';
+    });
+  } else {
+    window.location.href = '/login';
   }
 }
 
@@ -243,25 +221,6 @@ function initApp() {
       showSection(section);
       if (section === 'packages') fetchPackages();
     });
-  });
-
-  document.getElementById('login-btn').addEventListener('click', function() {
-    var user = document.getElementById('login-user').value.trim();
-    var pass = document.getElementById('login-pass').value;
-    if (!user || !pass) {
-      document.getElementById('login-error').textContent = 'Complete ambos campos';
-      document.getElementById('login-error').classList.remove('d-none');
-      return;
-    }
-    document.getElementById('login-error').classList.add('d-none');
-    login(user, pass).catch(function(err) {
-      document.getElementById('login-error').textContent = err.message;
-      document.getElementById('login-error').classList.remove('d-none');
-    });
-  });
-
-  document.getElementById('login-pass').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') document.getElementById('login-btn').click();
   });
 
   document.getElementById('logout-btn').addEventListener('click', logout);

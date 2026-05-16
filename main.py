@@ -52,6 +52,11 @@ async def serve_index():
     return FileResponse(os.path.join(STATIC_DIR, "index.html"))
 
 
+@app.get("/login")
+async def serve_login():
+    return FileResponse(os.path.join(STATIC_DIR, "login.html"))
+
+
 @app.get("/health")
 async def health():
     return {"status": "ok", "hostname": socket.gethostname()}
