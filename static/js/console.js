@@ -23,6 +23,7 @@ function executeCommand(command) {
         if (res.body.stdout) printConsole(res.body.stdout.replace(/\n$/, ''));
         if (res.body.stderr) printConsole(res.body.stderr.replace(/\n$/, ''));
         printConsole('[' + res.body.execution_ms + 'ms, exit: ' + res.body.exit_code + ']');
+        printConsole('');
       }
     })
     .catch(function(err) {
