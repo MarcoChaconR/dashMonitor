@@ -224,6 +224,9 @@ function initApp() {
       if (section === 'packages') fetchPackages();
       if (section === 'logs') loadLogSources();
       if (section === 'users') fetchUsers();
+      if (section === 'services') fetchServicesWithCache();
+      if (section === 'cron') fetchCron();
+      if (section === 'files') fetchFiles('/etc');
       if (section === 'console') document.getElementById('console-input').focus();
       if (section === 'system') fetchSystemInfo();
     });

@@ -40,6 +40,10 @@
         <li class="nav-item"><a class="nav-link" data-section="temperature" href="#"><i class="bi bi-thermometer-half me-2"></i>Temperatura</a></li>
         <li class="nav-item"><a class="nav-link" data-section="processes" href="#"><i class="bi bi-list-task me-2"></i>Procesos</a></li>
         <li class="nav-item"><hr class="border my-2"></li>
+        <li class="nav-item"><a class="nav-link" data-section="services" href="#"><i class="bi bi-gear me-2"></i>Servicios</a></li>
+        <li class="nav-item"><a class="nav-link" data-section="cron" href="#"><i class="bi bi-clock me-2"></i>Cron</a></li>
+        <li class="nav-item"><a class="nav-link" data-section="files" href="#"><i class="bi bi-folder me-2"></i>Archivos</a></li>
+        <li class="nav-item"><hr class="border my-2"></li>
         <li class="nav-item"><a class="nav-link" data-section="network-config" href="#"><i class="bi bi-router me-2"></i>Red Config</a></li>
         <li class="nav-item"><a class="nav-link" data-section="firewall" href="#"><i class="bi bi-shield-lock me-2"></i>Firewall</a></li>
         <li class="nav-item"><hr class="border my-2"></li>
@@ -188,6 +192,69 @@
         </div>
       </div>
 
+      <div id="section-services" class="section d-none">
+        <div class="card p-3">
+          <div class="d-flex flex-wrap justify-content-between mb-2 gap-2">
+            <h6 class="mb-0"><i class="bi bi-gear me-2"></i>Servicios del sistema</h6>
+            <div class="d-flex gap-2">
+              <input id="svc-filter" class="form-control form-control-sm" placeholder="Filtrar..." style="width:180px;">
+              <button id="svc-refresh-btn" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+          </div>
+          <div class="table-wrap" style="max-height:600px;">
+            <table class="table table-sm">
+              <thead><tr><th>Servicio</th><th>Estado</th><th style="width:150px;">Acciones</th></tr></thead>
+              <tbody id="svc-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="section-cron" class="section d-none">
+        <div class="card p-3">
+          <div class="d-flex flex-wrap justify-content-between mb-2 gap-2">
+            <h6 class="mb-0"><i class="bi bi-clock me-2"></i>Tareas cron (root)</h6>
+            <div class="d-flex gap-2">
+              <button id="cron-add-btn" class="btn btn-sm btn-outline-primary"><i class="bi bi-plus-lg me-1"></i>Nueva tarea</button>
+              <button id="cron-refresh-btn" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+          </div>
+          <div class="table-wrap" style="max-height:600px;">
+            <table class="table table-sm">
+              <thead><tr><th>Schedule</th><th>Comando</th><th>Usuario</th><th style="width:100px;">Acciones</th></tr></thead>
+              <tbody id="cron-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="section-files" class="section d-none">
+        <div class="card p-3">
+          <div class="d-flex flex-wrap justify-content-between mb-2 gap-2">
+            <h6 class="mb-0"><i class="bi bi-folder me-2"></i>Archivos</h6>
+            <div class="d-flex gap-2">
+              <button id="files-home-btn" class="btn btn-sm btn-outline-secondary">/etc</button>
+              <button id="files-parent-btn" class="btn btn-sm btn-outline-secondary d-none"><i class="bi bi-arrow-up"></i></button>
+              <button id="files-refresh-btn" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+          </div>
+          <small class="text-muted mb-2" id="files-path">/etc</small>
+          <div class="table-wrap" style="max-height:400px;">
+            <table class="table table-sm">
+              <thead><tr><th>Nombre</th><th>Permisos</th><th>Dueño</th><th>Tamaño</th><th>Modificado</th></tr></thead>
+              <tbody id="files-tbody"></tbody>
+            </table>
+          </div>
+          <div id="files-viewer" class="card p-3 mt-3 d-none">
+            <div class="d-flex justify-content-between mb-2">
+              <strong id="files-viewer-name"></strong>
+              <button id="files-close-viewer-btn" class="btn btn-sm btn-outline-secondary">Cerrar</button>
+            </div>
+            <pre id="files-viewer-content" style="background:#f8f9fa;color:#212529;font-family:'Courier New',monospace;font-size:12px;max-height:400px;overflow-y:auto;padding:12px;border:1px solid var(--border);border-radius:4px;"></pre>
+          </div>
+        </div>
+      </div>
+
       <div id="section-users" class="section d-none">
         <div class="card p-3">
           <div class="d-flex flex-wrap justify-content-between mb-2 gap-2">
@@ -239,6 +306,9 @@
 <script src="/static/js/logs.js"></script>
 <script src="/static/js/console.js"></script>
 <script src="/static/js/users.js"></script>
+<script src="/static/js/files.js"></script>
+<script src="/static/js/cron.js"></script>
+<script src="/static/js/services.js"></script>
 <script src="/static/js/app.js"></script>
 </body>
 </html>
