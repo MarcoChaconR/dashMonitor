@@ -1,3 +1,4 @@
+import os
 import subprocess
 import re
 import time
@@ -17,11 +18,17 @@ def run_command(command: str, timeout: int = 30) -> dict:
             raise HTTPException(400, {"message": "Comando bloqueado", "pattern": pattern})
 
     start = time.time()
+    safe_env = {
+        "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "HOME": os.environ.get("HOME", "/root"),
+        "TERM": os.environ.get("TERM", "xterm"),
+        "LANG": os.environ.get("LANG", "C.UTF-8"),
+    }
     try:
         result = subprocess.run(
             command, shell=True, capture_output=True, text=True,
             timeout=timeout,
-            env={"PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"}
+            env=safe_env
         )
         return {
             "stdout": result.stdout[:50000],
