@@ -49,6 +49,8 @@
         <li class="nav-item"><hr class="border my-2"></li>
         <li class="nav-item"><a class="nav-link" data-section="packages" href="#"><i class="bi bi-box me-2"></i>Paquetes</a></li>
         <li class="nav-item"><a class="nav-link" data-section="logs" href="#"><i class="bi bi-journal-text me-2"></i>Logs</a></li>
+        <li class="nav-item"><a class="nav-link" data-section="storage" href="#"><i class="bi bi-hdd-stack me-2"></i>Almacenamiento</a></li>
+        <li class="nav-item"><a class="nav-link" data-section="alerts" href="#"><i class="bi bi-exclamation-triangle me-2"></i>Alertas</a></li>
         <li class="nav-item"><a class="nav-link" data-section="users" href="#"><i class="bi bi-people me-2"></i>Usuarios</a></li>
         <li class="nav-item"><a class="nav-link" data-section="console" href="#"><i class="bi bi-terminal me-2"></i>Consola</a></li>
       </ul>
@@ -175,7 +177,7 @@
             <div class="col-6 col-sm-3 col-md-2">
               <div class="form-check form-switch mt-2">
                 <input class="form-check-input" type="checkbox" id="log-tail">
-                <label class="form-check-label" for="log-tail">Tail</label>
+                <label class="form-check-label" for="log-tail" id="log-tail-label">Tail (OFF)</label>
               </div>
             </div>
             <div class="col-6 col-sm-3 col-md-2">
@@ -185,6 +187,7 @@
           <div class="row mb-2 g-2">
             <div class="col-6"><small class="text-muted" id="log-info"></small></div>
             <div class="col-6 text-end">
+              <button id="log-export-btn" class="btn btn-sm btn-outline-secondary me-1"><i class="bi bi-download"></i></button>
               <button id="log-custom-btn" class="btn btn-sm btn-outline-secondary">Ruta personalizada...</button>
             </div>
           </div>
@@ -255,6 +258,37 @@
         </div>
       </div>
 
+      <div id="section-storage" class="section d-none">
+        <div class="card p-3 mb-3">
+          <div class="d-flex flex-wrap justify-content-between mb-2 gap-2">
+            <h6 class="mb-0"><i class="bi bi-hdd-stack me-2"></i>Dispositivos de almacenamiento</h6>
+            <button id="storage-refresh-btn" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-clockwise"></i></button>
+          </div>
+          <div class="table-wrap" style="max-height:500px;">
+            <table class="table table-sm">
+              <thead><tr><th>Dispositivo</th><th>FS</th><th>Tamaño</th><th>Montaje</th><th>Uso</th><th>UUID</th></tr></thead>
+              <tbody id="storage-blocks-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card p-3">
+          <h6><i class="bi bi-file-earmark-text me-1"></i>/etc/fstab</h6>
+          <div class="table-wrap mt-2" style="max-height:300px;">
+            <table class="table table-sm">
+              <thead><tr><th>Dispositivo</th><th>Montaje</th><th>FS</th><th>Opciones</th></tr></thead>
+              <tbody id="storage-fstab-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="section-alerts" class="section d-none">
+        <div class="card p-3 mb-3">
+          <h6 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Configuración de umbrales</h6>
+        </div>
+        <div id="alerts-config-body"></div>
+      </div>
+
       <div id="section-users" class="section d-none">
         <div class="card p-3">
           <div class="d-flex flex-wrap justify-content-between mb-2 gap-2">
@@ -309,6 +343,8 @@
 <script src="/static/js/files.js"></script>
 <script src="/static/js/cron.js"></script>
 <script src="/static/js/services.js"></script>
+<script src="/static/js/storage.js"></script>
+<script src="/static/js/alerts.js"></script>
 <script src="/static/js/app.js"></script>
 </body>
 </html>

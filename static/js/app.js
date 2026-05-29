@@ -227,6 +227,8 @@ function initApp() {
       if (section === 'services') fetchServicesWithCache();
       if (section === 'cron') fetchCron();
       if (section === 'files') fetchFiles('/etc');
+      if (section === 'storage') fetchStorage();
+      if (section === 'alerts') fetchAlertConfig();
       if (section === 'console') document.getElementById('console-input').focus();
       if (section === 'system') fetchSystemInfo();
     });

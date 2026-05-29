@@ -1,4 +1,5 @@
 var logRefreshInterval = null;
+var logSearchTimeout = null;
 
 function loadLogSources() {
   apiFetch('/api/logs').then(function(data) {
@@ -25,15 +26,28 @@ function loadLogContent() {
         out.textContent = 'Error: ' + data.error;
         return;
       }
-      out.textContent = data.lines.join('').replace(/\n$/, '');
+      var text = data.lines.join('').replace(/\n$/, '');
+      out.innerHTML = highlightLog(text);
       out.scrollTop = out.scrollHeight;
-      document.getElementById('log-info').textContent = 'Mostrando ' + data.showing + ' de ' + data.total + ' líneas — ' + data.path;
+      document.getElementById('log-info').textContent = data.showing + ' de ' + data.total + ' lineas - ' + data.path;
     }).catch(function() {});
+}
+
+function highlightLog(text) {
+  text = escapeHtml(text);
+  text = text.replace(/(ERROR|CRITICAL|FATAL|FAIL|ERR|PANIC)/gi, '<span class="log-error">$1</span>');
+  text = text.replace(/(WARNING|WARN)/gi, '<span class="log-warn">$1</span>');
+  text = text.replace(/(INFO|NOTICE)/gi, '<span class="log-info">$1</span>');
+  text = text.replace(/(DEBUG|TRACE)/gi, '<span class="log-debug">$1</span>');
+  return text;
 }
 
 function startLogTail() {
   stopLogTail();
-  logRefreshInterval = setInterval(loadLogContent, 5000);
+  logRefreshInterval = setInterval(loadLogContent, 3000);
+  document.getElementById('log-tail-label').textContent = 'Tail (ON)';
+  document.getElementById('log-tail-label').classList.remove('text-muted');
+  document.getElementById('log-tail-label').classList.add('text-success');
 }
 
 function stopLogTail() {
@@ -41,18 +55,42 @@ function stopLogTail() {
     clearInterval(logRefreshInterval);
     logRefreshInterval = null;
   }
+  document.getElementById('log-tail-label').textContent = 'Tail (OFF)';
+  document.getElementById('log-tail-label').classList.remove('text-success');
+  document.getElementById('log-tail-label').classList.add('text-muted');
+}
+
+function exportLogs() {
+  var text = document.getElementById('log-output').textContent;
+  var blob = new Blob([text], { type: 'text/plain' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'dashmonitor-logs-' + new Date().toISOString().slice(0, 19) + '.txt';
+  a.click();
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('log-source').addEventListener('change', loadLogContent);
   document.getElementById('log-lines').addEventListener('change', loadLogContent);
-  document.getElementById('log-filter').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') loadLogContent();
+
+  document.getElementById('log-filter').addEventListener('input', function() {
+    if (logSearchTimeout) clearTimeout(logSearchTimeout);
+    logSearchTimeout = setTimeout(loadLogContent, 500);
   });
+
   document.getElementById('log-refresh-btn').addEventListener('click', loadLogContent);
+
   document.getElementById('log-tail').addEventListener('change', function() {
     if (this.checked) startLogTail(); else stopLogTail();
   });
+
+  document.getElementById('log-export-btn').addEventListener('click', exportLogs);
+
   document.getElementById('log-custom-btn').addEventListener('click', function() {
     Swal.fire({
       title: 'Ruta personalizada',
@@ -71,9 +109,9 @@ document.addEventListener('DOMContentLoaded', function() {
               out.textContent = 'Error: ' + data.error;
               return;
             }
-            out.textContent = data.lines.join('').replace(/\n$/, '');
+            out.innerHTML = highlightLog(data.lines.join('').replace(/\n$/, ''));
             out.scrollTop = out.scrollHeight;
-            document.getElementById('log-info').textContent = 'Mostrando ' + data.showing + ' de ' + data.total + ' líneas — ' + data.path;
+            document.getElementById('log-info').textContent = data.showing + ' de ' + data.total + ' lineas - ' + data.path;
           }).catch(function() {});
       }
     });

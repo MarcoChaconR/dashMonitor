@@ -75,6 +75,11 @@ th.sortable .sort-indicator { font-size: 0.7em; }
   #console-output { min-height: 200px; max-height: 350px; font-size: 12px; white-space: pre-wrap; word-break: break-all; }
 }
 
+.log-error { color: var(--accent-red); font-weight: bold; }
+.log-warn  { color: var(--accent-orange); font-weight: bold; }
+.log-info  { color: var(--accent-blue); }
+.log-debug { color: var(--text-muted); }
+
 @media (max-width: 420px) {
   .sidebar .nav-link {
     padding: 0.3rem 0.45rem;
