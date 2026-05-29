@@ -8,7 +8,7 @@ from starlette.responses import FileResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from config import HOST, PORT, ENV, PROTECTED_PIDS
-from routers import auth, metrics, processes, console, logs, packages, system_info, network, firewall
+from routers import auth, metrics, processes, console, logs, packages, system_info, network, firewall, users
 
 app = FastAPI(title="dashMonitor", docs_url=None if ENV == "production" else "/docs",
               redoc_url=None if ENV == "production" else "/redoc")
@@ -42,6 +42,7 @@ app.include_router(packages.router)
 app.include_router(system_info.router)
 app.include_router(network.router)
 app.include_router(firewall.router)
+app.include_router(users.router)
 
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")

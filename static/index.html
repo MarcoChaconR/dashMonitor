@@ -45,6 +45,7 @@
         <li class="nav-item"><hr class="border my-2"></li>
         <li class="nav-item"><a class="nav-link" data-section="packages" href="#"><i class="bi bi-box me-2"></i>Paquetes</a></li>
         <li class="nav-item"><a class="nav-link" data-section="logs" href="#"><i class="bi bi-journal-text me-2"></i>Logs</a></li>
+        <li class="nav-item"><a class="nav-link" data-section="users" href="#"><i class="bi bi-people me-2"></i>Usuarios</a></li>
         <li class="nav-item"><a class="nav-link" data-section="console" href="#"><i class="bi bi-terminal me-2"></i>Consola</a></li>
       </ul>
     </div>
@@ -187,19 +188,36 @@
         </div>
       </div>
 
+      <div id="section-users" class="section d-none">
+        <div class="card p-3">
+          <div class="d-flex flex-wrap justify-content-between mb-2 gap-2">
+            <h6 class="mb-0"><i class="bi bi-people me-2"></i>Usuarios del sistema</h6>
+            <div class="d-flex gap-2">
+              <button id="users-add-btn" class="btn btn-sm btn-outline-primary"><i class="bi bi-person-plus me-1"></i>Nuevo usuario</button>
+              <button id="users-refresh-btn" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+          </div>
+          <div class="table-wrap" style="max-height:600px;">
+            <table class="table table-sm">
+              <thead><tr><th>Usuario</th><th>UID</th><th>Grupos</th><th>Shell</th><th>Home</th><th></th></tr></thead>
+              <tbody id="users-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <div id="section-console" class="section d-none">
         <div class="card p-3">
           <div class="d-flex flex-wrap justify-content-between mb-2 gap-2">
-            <h6 class="mb-0">Consola <small class="text-muted" id="console-timer"></small></h6>
+            <h6 class="mb-0"><i class="bi bi-terminal me-2"></i>Consola</h6>
             <div class="d-flex gap-2">
-              <button id="console-auth-btn" class="btn btn-sm btn-outline-warning">Autenticar PIN</button>
               <button id="console-clear-btn" class="btn btn-sm btn-outline-secondary">Limpiar</button>
             </div>
           </div>
           <div id="console-output"></div>
           <div class="input-group mt-2">
-            <span class="input-group-text bg-light text-muted border">$</span>
-            <input id="console-input" class="form-control" placeholder="Escriba un comando..." disabled>
+            <span class="input-group-text bg-dark text-light border-secondary" id="console-prompt">$</span>
+            <input id="console-input" class="form-control bg-dark text-light border-secondary" placeholder="Escriba un comando...">
           </div>
         </div>
       </div>
@@ -220,6 +238,7 @@
 <script src="/static/js/processes.js"></script>
 <script src="/static/js/logs.js"></script>
 <script src="/static/js/console.js"></script>
+<script src="/static/js/users.js"></script>
 <script src="/static/js/app.js"></script>
 </body>
 </html>

@@ -167,22 +167,6 @@ function updateNavbarInfo(data) {
 }
 
 function activateSession() {
-  var savedConsoleToken = getConsoleToken();
-  if (savedConsoleToken) {
-    var cp = parseJWT(savedConsoleToken);
-    if (cp && cp.exp && Date.now() < cp.exp * 1000) {
-      state.consoleToken = savedConsoleToken;
-      if (typeof consoleToken !== 'undefined') {
-        consoleToken = savedConsoleToken;
-        if (typeof startConsoleCountdown === 'function') {
-          startConsoleCountdown(cp.exp - Math.floor(Date.now() / 1000));
-        }
-        document.getElementById('console-input').disabled = false;
-      }
-    } else {
-      localStorage.removeItem('dashmonitor_console_token');
-    }
-  }
   setUsername();
   startPolling();
   fetchMetrics();
@@ -239,6 +223,9 @@ function initApp() {
       showSection(section);
       if (section === 'packages') fetchPackages();
       if (section === 'logs') loadLogSources();
+      if (section === 'users') fetchUsers();
+      if (section === 'console') document.getElementById('console-input').focus();
+      if (section === 'system') fetchSystemInfo();
     });
   });
 
