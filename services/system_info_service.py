@@ -1,3 +1,4 @@
+import os
 import subprocess
 import platform
 import socket
@@ -25,15 +26,30 @@ def _run(cmd: list[str]) -> str:
 
 
 def _get_os_info():
-    release = _run(["cat", "/etc/alpine-release"])
-    if not release:
-        release = _run(["cat", "/etc/os-release"]).split("\n")[0] if _run(["cat", "/etc/os-release"]) else ""
+    name = _get_distro_name()
     return {
-        "name": f"Alpine Linux {release}" if release else platform.system(),
+        "name": name,
         "kernel": platform.release(),
         "hostname": socket.gethostname(),
         "architecture": platform.machine(),
     }
+
+
+def _get_distro_name():
+    if os.path.exists("/etc/alpine-release"):
+        ver = _run(["cat", "/etc/alpine-release"])
+        return f"Alpine Linux {ver}"
+
+    if os.path.exists("/etc/os-release"):
+        data = {}
+        with open("/etc/os-release") as f:
+            for line in f:
+                if "=" in line:
+                    k, v = line.strip().split("=", 1)
+                    data[k] = v.strip('"')
+        return data.get("PRETTY_NAME") or data.get("NAME", "Linux")
+
+    return platform.system() or "Linux"
 
 
 def _get_hardware_info():

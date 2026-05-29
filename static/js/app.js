@@ -142,10 +142,28 @@ function setUsername() {
 
 function updateNavbarInfo(data) {
   document.getElementById('navbar-hostname').textContent = data.hostname;
-  var uptime = data.uptime_seconds;
-  var h = Math.floor(uptime / 3600);
-  var m = Math.floor((uptime % 3600) / 60);
-  document.getElementById('navbar-uptime').textContent = h + 'h ' + m + 'm';
+
+  var seconds = data.uptime_seconds;
+  var years = Math.floor(seconds / 31536000);
+  seconds %= 31536000;
+  var months = Math.floor(seconds / 2592000);
+  seconds %= 2592000;
+  var days = Math.floor(seconds / 86400);
+  seconds %= 86400;
+  var hours = Math.floor(seconds / 3600);
+  seconds %= 3600;
+  var minutes = Math.floor(seconds / 60);
+  seconds = Math.floor(seconds % 60);
+
+  var parts = [];
+  if (years > 0) parts.push(years + 'a');
+  if (months > 0) parts.push(months + 'm');
+  if (days > 0) parts.push(days + 'd');
+  if (hours > 0) parts.push(hours + 'h');
+  if (minutes > 0 || parts.length > 0) parts.push(minutes + 'min');
+  parts.push(seconds + 's');
+
+  document.getElementById('navbar-uptime').textContent = parts.join(' ');
 }
 
 function activateSession() {
